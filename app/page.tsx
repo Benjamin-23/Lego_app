@@ -4,19 +4,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Bell, Bot, Globe, Settings, TrendingUp, Users, Zap, Link } from "lucide-react"
-import {NavSideBar} from "@/components/navSide"
-import { ListingComponent } from "@/components/ListingComponent"
-
-
 
 export default function Dashboard() {
-
-
   return (
     <div className="min-h-screen bg-background">
-      {/* <button onClick={handleCreateListing}>Listing</button> */}
       {/* Header */}
-      
       <header className="border-b border-border bg-card">
         <div className="flex h-16 items-center justify-between px-6">
           <div className="flex items-center gap-3">
@@ -37,7 +29,59 @@ export default function Dashboard() {
       </header>
 
       <div className="flex">
-        <NavSideBar/>
+        {/* Sidebar */}
+        <aside className="w-64 border-r border-sidebar-border bg-sidebar p-6">
+          <nav className="space-y-2">
+            <Button variant="ghost" className="w-full justify-start gap-3 text-sidebar-foreground">
+              <TrendingUp className="h-4 w-4" />
+              Dashboard
+            </Button>
+            <Button
+              variant="ghost"
+              className="w-full justify-start gap-3 text-sidebar-foreground"
+              onClick={() => (window.location.href = "/domains")}
+            >
+              <Globe className="h-4 w-4" />
+              Domain Monitor
+            </Button>
+            <Button
+              variant="ghost"
+              className="w-full justify-start gap-3 text-sidebar-foreground"
+              onClick={() => (window.location.href = "/doma")}
+            >
+              <Link className="h-4 w-4" />
+              Doma Protocol
+            </Button>
+            <Button variant="ghost" className="w-full justify-start gap-3 text-sidebar-foreground">
+              <Bot className="h-4 w-4" />
+              Bot Management
+            </Button>
+            <Button
+              variant="ghost"
+              className="w-full justify-start gap-3 text-sidebar-foreground"
+              onClick={() => (window.location.href = "/alerts")}
+            >
+              <Bell className="h-4 w-4" />
+              Alerts
+            </Button>
+            <Button
+              variant="ghost"
+              className="w-full justify-start gap-3 text-sidebar-foreground"
+              onClick={() => (window.location.href = "/subscriptions")}
+            >
+              <Users className="h-4 w-4" />
+              Subscriptions
+            </Button>
+            <Button
+              variant="ghost"
+              className="w-full justify-start gap-3 text-sidebar-foreground"
+              onClick={() => (window.location.href = "/community")}
+            >
+              <Users className="h-4 w-4" />
+              Community
+            </Button>
+          </nav>
+        </aside>
 
         {/* Main Content */}
         <main className="flex-1 p-6">
@@ -45,7 +89,7 @@ export default function Dashboard() {
             <h2 className="text-2xl font-bold text-foreground">Domain Alert Dashboard</h2>
             <p className="text-muted-foreground">Monitor domains, manage alerts, and engage your community</p>
           </div>
-          <ListingComponent/>
+
           {/* Stats Cards */}
           <div className="mb-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card>
