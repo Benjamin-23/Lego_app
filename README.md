@@ -1,10 +1,4 @@
 # Lego - Domain Alert Bot 🤖
-
-*Advanced domain monitoring and trading platform powered by Doma Protocol*
-
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/basilicas-projects/v0-domain-alert-bot)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.app-black?style=for-the-badge)](https://v0.app/chat/projects/exEsqsGiu63)
-
 ## 🚀 Overview
 
 Lego is a comprehensive domain monitoring and trading platform that combines traditional domain tracking with cutting-edge blockchain technology through the Doma Protocol. Built for domain investors, traders, and enthusiasts, Lego provides real-time alerts, automated trading capabilities, and a vibrant community ecosystem.
