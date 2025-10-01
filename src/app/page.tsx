@@ -1,103 +1,158 @@
-import Image from "next/image";
+'use client';
+
+import { useAccount } from 'wagmi';
+import { ConnectWallet } from '@/components/connect-wallet';
+import { DashboardStats } from '@/components/dashboard/dashboard-stats';
+import { RecentDomains } from '@/components/dashboard/recent-domains';
+import { ActiveListings } from '@/components/dashboard/active-listings';
+import { LiveEvents } from '@/components/dashboard/live-events';
+import { QuickActions } from '@/components/dashboard/quick-actions';
+import { SubscriptionStatus } from '@/components/dashboard/subscription-status';
+import { DomainSearch } from '@/components/dashboard/domain-search';
+import { CreateListing } from '@/components/orderbook/create-listing';
+import { CreateOffer } from '@/components/orderbook/create-offer';
+import { OrderManagement } from '@/components/orderbook/order-management';
+import { LoadingState } from '@/components/loading-state';
+import { useDomaData } from '@/hooks/use-doma-data';
+import { useDomaEvents } from '@/hooks/use-doma-events';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle, Radio, Key, Eye, ShoppingCart } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const { isConnected, status } = useAccount();
+  const { recentNames, activeListings, loading: domaLoading, error: domaError } = useDomaData();
+  const { events, loading: eventsLoading, error: eventsError,  pollEvents } = useDomaEvents(3000);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const loading = domaLoading && eventsLoading;
+  const error = domaError || eventsError;
+  // const usingDemoData = domaUsingDemo || eventsUsingDemo;
+
+  if (status === 'reconnecting' || status === 'connecting') {
+    return <LoadingState />;
+  }
+
+  return (
+    <main className="container mx-auto p-4 min-h-screen">
+      <div className="flex justify-between items-center mb-8 pt-6">
+        <div>
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl font-bold">Loma - DOMA Alert System</h1>
+            {events.length > 0 && (
+              <div className="flex items-center gap-2 px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">
+                <Radio className="h-3 w-3 animate-pulse" />
+                <span className="font-medium">{events.length} Live Events</span>
+              </div>
+            )}
+          </div>
+          <p className="text-muted-foreground mt-2">
+            Real-time monitoring and trading for DOMA domains
+          </p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        <ConnectWallet />
+      </div>
+
+      {/* API Status Alerts */}
+      {/* {usingDemoData && (
+        <Alert className="mb-6 bg-blue-50 border-blue-200">
+          <Eye className="h-4 w-4 text-blue-600" />
+          <AlertDescription className="text-blue-800">
+            <strong>Demo Mode:</strong> Using sample data. Add your DOMA API key to see real data.
+          </AlertDescription>
+        </Alert>
+      )} */}
+
+      {!process.env.NEXT_PUBLIC_DOMA_API_KEY && (
+        <Alert className="mb-6 bg-amber-50 border-amber-200">
+          <Key className="h-4 w-4 text-amber-600" />
+          <AlertDescription className="text-amber-800">
+            <strong>API Key Missing:</strong> Set <code>NEXT_PUBLIC_DOMA_API_KEY</code> in your environment variables to access real DOMA data.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {error && (
+        <Alert variant="destructive" className="mb-6">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            {error}
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {isConnected ? (
+        <Tabs defaultValue="dashboard" className="space-y-8">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+            <TabsTrigger value="marketplace">Marketplace</TabsTrigger>
+            <TabsTrigger value="listings">My Listings</TabsTrigger>
+            <TabsTrigger value="offers">My Offers</TabsTrigger>
+          </TabsList>
+
+          {/* Dashboard Tab */}
+          <TabsContent value="dashboard" className="space-y-8">
+            <DomainSearch />
+            
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+              <div className="lg:col-span-3">
+                <DashboardStats 
+                  recentNamesCount={recentNames.length}
+                  activeListingsCount={activeListings.length}
+                  events={events}
+                  loading={loading}
+                />
+              </div>
+              <div>
+                <SubscriptionStatus />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+              <div className="xl:col-span-2">
+                <LiveEvents events={events} loading={eventsLoading} onRefresh={pollEvents} />
+              </div>
+              <div className="space-y-8">
+                <RecentDomains domains={recentNames} loading={domaLoading} />
+                <ActiveListings listings={activeListings} loading={domaLoading} />
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Marketplace Tab */}
+          <TabsContent value="marketplace" className="space-y-6">
+            <div className="flex items-center gap-2 mb-6">
+              <ShoppingCart className="h-6 w-6" />
+              <h2 className="text-2xl font-bold">DOMA Marketplace</h2>
+            </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <CreateListing />
+              <CreateOffer />
+            </div>
+
+            <div className="grid grid-cols-1 gap-6">
+              <OrderManagement />
+            </div>
+          </TabsContent>
+
+          {/* Listings Tab */}
+          <TabsContent value="listings" className="space-y-6">
+            <h2 className="text-2xl font-bold">My Domain Listings</h2>
+            <OrderManagement />
+          </TabsContent>
+
+          {/* Offers Tab */}
+          <TabsContent value="offers" className="space-y-6">
+            <h2 className="text-2xl font-bold">My Domain Offers</h2>
+            <OrderManagement />
+          </TabsContent>
+        </Tabs>
+      ) : (
+        // ... keep existing disconnected state
+        <div className="text-center py-12">
+          {/* ... existing disconnected content ... */}
+        </div>
+      )}
+    </main>
   );
 }
