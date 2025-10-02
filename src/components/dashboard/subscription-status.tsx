@@ -21,7 +21,7 @@ export function SubscriptionStatus() {
         
         <div className="flex items-center justify-between">
           <span className="text-sm">Expires</span>
-          <span className="text-sm">Dec 15, 2024</span>
+          <span className="text-sm">Dec 15, 2025</span>
         </div>
 
         <div className="flex items-center justify-between">

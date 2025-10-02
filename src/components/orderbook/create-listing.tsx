@@ -12,6 +12,7 @@ import { useAccount } from 'wagmi';
 import { orderbookApi, CreateOrderRequest } from '@/lib/orderbook-api';
 import { Loader2, Plus, X } from 'lucide-react';
 import { useSignTypedData } from 'wagmi';
+import { parseEther, toHex } from 'viem';
 
 export function CreateListing() {
   const { address } = useAccount();
@@ -41,13 +42,14 @@ export function CreateListing() {
       const duration = formData.duration;
       const startTime = Math.floor(Date.now() / 1000);
       const endTime = startTime + parseInt(duration) * 86400;
-      const salt = '0x' + Math.floor(Math.random() * 1e18).toString(16);
+      // bytes32 salt
+      const salt = toHex(crypto.getRandomValues(new Uint8Array(32)));
 
       // EIP-712 domain and types
       const eip712Domain = {
         name: 'DOMAOrderbook',
         version: '1',
-        chainId: 1, // You may want to map chainId string to number
+        chainId: 97476, // You may want to map chainId string to number
         verifyingContract: '0x0000000000000000000000000000000000000000', // Replace with your contract
       };
       const orderTypes = {
@@ -63,7 +65,7 @@ export function CreateListing() {
       };
       const order = {
         domain,
-        price: price,
+        price: parseEther(price || '0'),
         seller: address,
         currency,
         startTime,
@@ -75,7 +77,11 @@ export function CreateListing() {
       let signature = '';
       try {
         signature = await signTypedDataAsync({
-          domain: eip712Domain,
+          domain: {
+            ...eip712Domain,
+            chainId: Number(eip712Domain.chainId),
+            verifyingContract: eip712Domain.verifyingContract as `0x${string}`,
+          },
           types: orderTypes,
           primaryType: 'Order',
           message: order,
@@ -89,24 +95,48 @@ export function CreateListing() {
         orderbook,
         chainId,
         parameters: {
-          ...order,
+          salt: order.salt,
           startTime: String(startTime),
           endTime: String(endTime),
           offerer: address,
           zone: address,
           orderType: 0,
-          zoneHash: '',
-          offer: [],
-          consideration: [],
+          zoneHash: '0x0000000000000000000000000000000000000000000000000000000000000000',
+          offer: [[]],
+          consideration: [[]],
           totalOriginalConsiderationItems: 2,
-          conduitKey: '',
-          counter: ''
+          conduitKey: '0x0000000000000000000000000000000000000000000000000000000000000000',
+          counter: '0'
         },
         signature,
       };
       console.log('Creating listing with data:', orderData);
-      const result = await orderbookApi.createListing(orderData);
+      // Convert any BigInt values in orderData to strings before sending to API
+      function stringifyBigInts(obj: any): any {
+        if (typeof obj === 'bigint') {
+          return obj.toString();
+        } else if (Array.isArray(obj)) {
+          return obj.map(stringifyBigInts);
+        } else if (obj && typeof obj === 'object') {
+          const newObj: any = {};
+          for (const key in obj) {
+            newObj[key] = stringifyBigInts(obj[key]);
+          }
+          return newObj;
+        }
+        return obj;
+      }
+      const sanitizedOrderData = stringifyBigInts(orderData);
+      const result = await orderbookApi.createListing(sanitizedOrderData);
+      if(result.status === 400) {
+        console.log('Failed to create listing: ' + result.status);
+        return;
+      }
       console.log('Listing created:', result);
+      if (result.status === 400 && result.body && result.body.message) {
+        // Show a user-friendly error message if available
+        alert(`Failed to create listing: ${result.body.message}`);
+      }
       // Handle success
     } catch (error) {
       console.error('Failed to create listing:', error);

@@ -37,7 +37,7 @@ export default function Home() {
       <div className="flex justify-between items-center mb-8 pt-6">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-bold">Loma - DOMA Alert System</h1>
+            <h1 className="text-3xl font-bold tracking-tight">Lego - DOMA Alert System</h1>
             {events.length > 0 && (
               <div className="flex items-center gap-2 px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">
                 <Radio className="h-3 w-3 animate-pulse" />
@@ -49,7 +49,7 @@ export default function Home() {
             Real-time monitoring and trading for DOMA domains
           </p>
         </div>
-        <ConnectWallet />
+        {/* <ConnectWallet /> */}
       </div>
 
       {/* API Status Alerts */}
@@ -148,10 +148,33 @@ export default function Home() {
           </TabsContent>
         </Tabs>
       ) : (
-        // ... keep existing disconnected state
-        <div className="text-center py-12">
-          {/* ... existing disconnected content ... */}
-        </div>
+        <section className="relative overflow-hidden rounded-2xl border bg-card/60 p-8 md:p-12">
+          <div className="absolute inset-0 -z-10 bg-[radial-gradient(40rem_20rem_at_120%_-20%,hsl(217_91%_60%_/_0.12),transparent_60%)]" />
+          <div className="max-w-2xl">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight">Monitor, trade and get alerts for DOMA domains</h1>
+            <p className="mt-4 text-lg text-muted-foreground">
+              Connect your wallet to access live marketplace data, create listings and offers, and receive instant alerts on domain events.
+            </p>
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              <ConnectWallet />
+              <div className="text-sm text-muted-foreground">No wallet? You can still explore public data.</div>
+            </div>
+          </div>
+          <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div className="rounded-xl border bg-background/50 p-4">
+              <div className="text-sm font-medium">Live Events</div>
+              <div className="text-muted-foreground">See real-time domain events as they happen.</div>
+            </div>
+            <div className="rounded-xl border bg-background/50 p-4">
+              <div className="text-sm font-medium">Marketplace</div>
+              <div className="text-muted-foreground">Create listings and offers with ease.</div>
+            </div>
+            <div className="rounded-xl border bg-background/50 p-4">
+              <div className="text-sm font-medium">Alerts</div>
+              <div className="text-muted-foreground">Get notified for the events you care about.</div>
+            </div>
+          </div>
+        </section>
       )}
     </main>
   );

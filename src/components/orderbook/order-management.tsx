@@ -29,8 +29,8 @@ export function OrderManagement() {
       price: '1.5',
       currency: 'ETH',
       status: 'ACTIVE',
-      createdAt: '2024-01-15T10:30:00Z',
-      expiresAt: '2024-02-15T10:30:00Z'
+      createdAt: '2025-01-15T10:30:00Z',
+      expiresAt: '2026-02-15T10:30:00Z'
     },
     {
       id: '4434-4675-5844-8264',
@@ -39,8 +39,8 @@ export function OrderManagement() {
       price: '0.8',
       currency: 'ETH',
       status: 'ACTIVE',
-      createdAt: '2024-01-16T14:20:00Z',
-      expiresAt: '2024-01-23T14:20:00Z'
+      createdAt: '2025-01-16T14:20:00Z',
+      expiresAt: '2025-12-23T14:20:00Z'
     }
   ]);
   const [loading, setLoading] = useState<string | null>(null);

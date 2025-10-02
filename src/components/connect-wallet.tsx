@@ -3,7 +3,9 @@
 import { Button } from '@/components/ui/button';
 import { useConnectWallet } from '@/hooks/use-connect-wallet';
 import { Loader2, LogOut } from 'lucide-react';
-
+ // Add account balance and symbol
+ import { useEffect, useState } from 'react';
+ import { useAccount, useBalance } from 'wagmi';
 export function ConnectWallet() {
   const { 
     address, 
@@ -12,9 +14,29 @@ export function ConnectWallet() {
     error, 
     pendingConnector, 
     connect, 
-    disconnect 
+    disconnect,
   } = useConnectWallet();
 
+ 
+
+  // Get the current account address from wagmi (if not already from useConnectWallet)
+  const { address: wagmiAddress } = useAccount();
+  const [balance, setBalance] = useState<string | null>(null);
+  const [symbol, setSymbol] = useState<string | null>(null);
+
+  // Use wagmi's useBalance to fetch balance and symbol
+  const { data: balanceData, isLoading: balanceLoading } = useBalance({
+    address: address || wagmiAddress,
+    // 'enabled' is not a valid property for useBalance options, so we remove it.
+    // useBalance will not fetch if address is undefined/null.
+  });
+
+  useEffect(() => {
+    if (balanceData) {
+      setBalance(balanceData.formatted);
+      setSymbol(balanceData.symbol);
+    }
+  }, [balanceData]);
   if (status === 'reconnecting' || status === 'connecting') {
     return (
       <Button disabled>
@@ -30,6 +52,11 @@ export function ConnectWallet() {
         <span className="text-sm font-mono bg-muted px-3 py-1 rounded-md">
           {address.slice(0, 6)}...{address.slice(-4)}
         </span>
+        {balance && symbol && (
+          <span className="text-sm font-mono bg-muted px-3 py-1 rounded-md">
+            {balance} {symbol}
+          </span>
+        )}
         <Button variant="outline" onClick={() => disconnect()} size="sm">
           <LogOut className="h-4 w-4 mr-2" />
           Disconnect
