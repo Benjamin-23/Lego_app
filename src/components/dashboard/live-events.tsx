@@ -78,7 +78,7 @@ export function LiveEvents({ events, loading, onRefresh }: LiveEventsProps) {
     return filteredEvents.slice(0, endIndex);
   }, [filteredEvents, currentPage, pageSize]);
 
-  const totalPages = Math.ceil(filteredEvents.length / pageSize);
+  // const totalPages = Math.ceil(filteredEvents.length / pageSize);
   const hasMoreEvents = paginatedEvents.length < filteredEvents.length;
 
   const handleRefresh = () => {

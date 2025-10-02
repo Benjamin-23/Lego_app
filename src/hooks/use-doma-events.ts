@@ -79,5 +79,5 @@ export function useDomaEvents(pollInterval: number = 5000) {
     };
   }, [pollEvents, pollInterval]);
 
-  return { events, loading, error, lastEventId: lastId, pollEvents };
+  return { events, loading, error,  pollEvents };
 }

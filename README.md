@@ -13,6 +13,50 @@ This project is a modern web dashboard built with [Next.js](https://nextjs.org),
 - **Activity Feed:** All protocol-related activities (registrations, renewals, transfers) are displayed in an activity log, sourced from DOMA’s on-chain events.
 - **Wallet Integration:** Users connect their wallets to authenticate and interact with the DOMA Protocol, ensuring secure and permissionless access.
 
+🚀 Features
+🔍 Real-time Monitoring
+Live Domain Events: Track domain minting, transfers, and burns in real-time
+Event Filtering: Filter by event types (MINTED, TRANSFER, BURNED)
+Pagination: Browse through events with configurable page sizes
+WebSocket-like Polling: Continuous updates from DOMA's event API
+
+📈 Domain Intelligence
+-Recent Domains: View newly tokenized domains on the DOMA protocol
+-Active Listings: Monitor marketplace listings and pricing
+-Domain Search: Search and monitor specific domains
+-Statistics Dashboard: Real-time metrics and insights
+
+🛒 Marketplace Integration
+Create Listings: List domains for sale on DOMA and OpenSea orderbooks
+
+Make Offers: Create offers for domains you want to acquire
+
+Order Management: View, search, and cancel your active orders
+
+Multi-Currency Support: Trade using ETH, USDC, DAI, and more
+
+🔔 Alert System
+Custom Alerts: Set up notifications for specific domain events
+
+Subscription Tiers: Free, Pro, and Enterprise plans
+
+Real-time Notifications: Get instant alerts for opportunities
+
+Domain Expiration Tracking: Never miss a domain renewal
+
+🛠️ Technology Stack
+Frontend: Next.js 15, TypeScript, Tailwind CSS
+
+UI Components: shadcn/ui, Radix UI
+
+Web3 Integration: Wagmi, Viem
+
+Blockchain: DOMA Protocol, Ethereum, Polygon
+
+API Integration: DOMA GraphQL API, REST APIs
+
+State Management: React Hooks, TanStack Query
+
 ## Getting Started
 
 To run the project locally, follow these steps:
@@ -45,10 +89,15 @@ To run the project locally, follow these steps:
 
 ## Project Structure
 
+``` .env
+NEXT_PUBLIC_DOMA_API_KEY=your_doma_api_key_here
+NEXT_PUBLIC_DOMA_TESTNET_ENDPOINT=https://api-testnet.doma.xyz
+```
+
 - `src/components/layout/navbar.tsx`: Main navigation bar, including wallet connection and theme toggle.
 - `app/page.tsx`: Main dashboard page, where you can start editing and customizing your app.
 - `src/components/connect-wallet.tsx`: Handles wallet connection for DOMA Protocol interactions.
-- `src/lib/doma.ts`: (If present) Contains utility functions for interacting with DOMA smart contracts.
+- `src/lib/doma-api.ts`: (If present) Contains utility functions for interacting with DOMA smart contracts.
 
 ## Customization
 

@@ -14,6 +14,7 @@ export async function signEip712(params: SignTypedDataParams) {
   const { domain, types, primaryType, message, account } = params
   // wagmi signTypedData expects "EIP712Domain" to be omitted
   const { EIP712Domain: _omit, ...typed } = types
+  console.log('typed', _omit)
   return await signTypedData(config, {
     account,
     domain,

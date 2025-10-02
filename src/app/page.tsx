@@ -6,7 +6,6 @@ import { DashboardStats } from '@/components/dashboard/dashboard-stats';
 import { RecentDomains } from '@/components/dashboard/recent-domains';
 import { ActiveListings } from '@/components/dashboard/active-listings';
 import { LiveEvents } from '@/components/dashboard/live-events';
-import { QuickActions } from '@/components/dashboard/quick-actions';
 import { SubscriptionStatus } from '@/components/dashboard/subscription-status';
 import { DomainSearch } from '@/components/dashboard/domain-search';
 import { CreateListing } from '@/components/orderbook/create-listing';
@@ -16,7 +15,7 @@ import { LoadingState } from '@/components/loading-state';
 import { useDomaData } from '@/hooks/use-doma-data';
 import { useDomaEvents } from '@/hooks/use-doma-events';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle, Radio, Key, Eye, ShoppingCart } from 'lucide-react';
+import { AlertCircle, Radio, Key, ShoppingCart } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function Home() {

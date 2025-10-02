@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge, Bell, Eye, TrendingUp, Database, Zap } from 'lucide-react';
+import { Badge, Bell, Database, Zap } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { DomaEvent } from '@/hooks/use-doma-events';
 
@@ -26,7 +26,7 @@ export function DashboardStats({ recentNamesCount, activeListingsCount, events, 
   // Calculate stats from events
   const mintedCount = events.filter(e => e.type === 'NAME_TOKEN_MINTED').length;
   const transferredCount = events.filter(e => e.type === 'NAME_TOKEN_TRANSFER').length;
-  const burnedCount = events.filter(e => e.type === 'NAME_TOKEN_BURNED').length;
+  // const burnedCount = events.filter(e => e.type === 'NAME_TOKEN_BURNED').length;
 
   const stats = [
     {

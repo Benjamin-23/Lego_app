@@ -1,31 +1,36 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { useAccount } from 'wagmi';
-import { orderbookApi, CreateOrderRequest } from '@/lib/orderbook-api';
-import { Loader2, Plus, X } from 'lucide-react';
-import { useSignTypedData } from 'wagmi';
-import { parseEther, toHex } from 'viem';
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { useAccount } from "wagmi";
+import { orderbookApi, CreateOrderRequest } from "@/lib/orderbook-api";
+import { Loader2, Plus } from "lucide-react";
+import { useSignTypedData } from "wagmi";
+import { parseEther, toHex } from "viem";
 
 export function CreateListing() {
   const { address } = useAccount();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    orderbook: 'DOMA' as 'OPENSEA' | 'DOMA',
-    chainId: 'eip155:1',
-    domainName: '',
-    price: '',
-    currency: 'ETH',
-    duration: '30', // days
+    orderbook: "DOMA" as "OPENSEA" | "DOMA",
+    chainId: "eip155:1",
+    domainName: "",
+    price: "",
+    currency: "ETH",
+    duration: "30", // days
   });
- 
+
   // --- Add wagmi signTypedData hook ---
   const { signTypedDataAsync } = useSignTypedData();
 
@@ -47,25 +52,25 @@ export function CreateListing() {
 
       // EIP-712 domain and types
       const eip712Domain = {
-        name: 'DOMAOrderbook',
-        version: '1',
+        name: "DOMAOrderbook",
+        version: "1",
         chainId: 97476, // You may want to map chainId string to number
-        verifyingContract: '0x0000000000000000000000000000000000000000', // Replace with your contract
+        verifyingContract: "0x0000000000000000000000000000000000000000", // Replace with your contract
       };
       const orderTypes = {
         Order: [
-          { name: 'domain', type: 'string' },
-          { name: 'price', type: 'uint256' },
-          { name: 'seller', type: 'address' },
-          { name: 'currency', type: 'string' },
-          { name: 'startTime', type: 'uint256' },
-          { name: 'endTime', type: 'uint256' },
-          { name: 'salt', type: 'bytes32' },
+          { name: "domain", type: "string" },
+          { name: "price", type: "uint256" },
+          { name: "seller", type: "address" },
+          { name: "currency", type: "string" },
+          { name: "startTime", type: "uint256" },
+          { name: "endTime", type: "uint256" },
+          { name: "salt", type: "bytes32" },
         ],
       };
       const order = {
         domain,
-        price: parseEther(price || '0'),
+        price: parseEther(price || "0"),
         seller: address,
         currency,
         startTime,
@@ -74,7 +79,7 @@ export function CreateListing() {
       };
 
       // 2. Create EIP-712 signature with wagmi
-      let signature = '';
+      let signature = "";
       try {
         signature = await signTypedDataAsync({
           domain: {
@@ -83,11 +88,14 @@ export function CreateListing() {
             verifyingContract: eip712Domain.verifyingContract as `0x${string}`,
           },
           types: orderTypes,
-          primaryType: 'Order',
+          primaryType: "Order",
           message: order,
         });
       } catch (err) {
-        throw new Error('Signature failed: ' + (err instanceof Error ? err.message : String(err)));
+        throw new Error(
+          "Signature failed: " +
+            (err instanceof Error ? err.message : String(err))
+        );
       }
 
       // 3. Send to API
@@ -101,23 +109,25 @@ export function CreateListing() {
           offerer: address,
           zone: address,
           orderType: 0,
-          zoneHash: '0x0000000000000000000000000000000000000000000000000000000000000000',
+          zoneHash:
+            "0x0000000000000000000000000000000000000000000000000000000000000000",
           offer: [[]],
           consideration: [[]],
           totalOriginalConsiderationItems: 2,
-          conduitKey: '0x0000000000000000000000000000000000000000000000000000000000000000',
-          counter: '0'
+          conduitKey:
+            "0x0000000000000000000000000000000000000000000000000000000000000000",
+          counter: "0",
         },
         signature,
       };
-      console.log('Creating listing with data:', orderData);
+      console.log("Creating listing with data:", orderData);
       // Convert any BigInt values in orderData to strings before sending to API
       function stringifyBigInts(obj: any): any {
-        if (typeof obj === 'bigint') {
+        if (typeof obj === "bigint") {
           return obj.toString();
         } else if (Array.isArray(obj)) {
           return obj.map(stringifyBigInts);
-        } else if (obj && typeof obj === 'object') {
+        } else if (obj && typeof obj === "object") {
           const newObj: any = {};
           for (const key in obj) {
             newObj[key] = stringifyBigInts(obj[key]);
@@ -128,18 +138,15 @@ export function CreateListing() {
       }
       const sanitizedOrderData = stringifyBigInts(orderData);
       const result = await orderbookApi.createListing(sanitizedOrderData);
-      if(result.status === 400) {
-        console.log('Failed to create listing: ' + result.status);
+      if (result.status === 400) {
+        console.log("Failed to create listing: " + result.status);
         return;
       }
-      console.log('Listing created:', result);
-      if (result.status === 400 && result.body && result.body.message) {
-        // Show a user-friendly error message if available
-        alert(`Failed to create listing: ${result.body.message}`);
-      }
+      console.log("Listing created:", result);
+
       // Handle success
     } catch (error) {
-      console.error('Failed to create listing:', error);
+      console.error("Failed to create listing:", error);
       // Handle error
     } finally {
       setLoading(false);
@@ -161,12 +168,19 @@ export function CreateListing() {
             <Input
               placeholder="e.g., vitalik.doma"
               value={formData.domainName}
-              onChange={(e) => setFormData({...formData, domainName: e.target.value})}
+              onChange={(e) =>
+                setFormData({ ...formData, domainName: e.target.value })
+              }
             />
           </div>
           <div>
             <Label>Orderbook</Label>
-            <Select value={formData.orderbook} onValueChange={(value: 'OPENSEA' | 'DOMA') => setFormData({...formData, orderbook: value})}>
+            <Select
+              value={formData.orderbook}
+              onValueChange={(value: "OPENSEA" | "DOMA") =>
+                setFormData({ ...formData, orderbook: value })
+              }
+            >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -185,12 +199,19 @@ export function CreateListing() {
               type="number"
               placeholder="0.1"
               value={formData.price}
-              onChange={(e) => setFormData({...formData, price: e.target.value})}
+              onChange={(e:any) =>
+                setFormData({ ...formData, price: e.target.value })
+              }
             />
           </div>
           <div>
             <Label>Currency</Label>
-            <Select value={formData.currency} onValueChange={(value) => setFormData({...formData, currency: value})}>
+            <Select
+              value={formData.currency}
+              onValueChange={(value:any) =>
+                setFormData({ ...formData, currency: value })
+              }
+            >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -203,7 +224,12 @@ export function CreateListing() {
           </div>
           <div>
             <Label>Duration (days)</Label>
-            <Select value={formData.duration} onValueChange={(value) => setFormData({...formData, duration: value})}>
+            <Select
+              value={formData.duration}
+              onValueChange={(value:any) =>
+                setFormData({ ...formData, duration: value })
+              }
+            >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -219,7 +245,12 @@ export function CreateListing() {
 
         <div>
           <Label>Chain</Label>
-          <Select value={formData.chainId} onValueChange={(value) => setFormData({...formData, chainId: value})}>
+          <Select
+            value={formData.chainId}
+            onValueChange={(value:any) =>
+              setFormData({ ...formData, chainId: value })
+            }
+          >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -231,8 +262,8 @@ export function CreateListing() {
           </Select>
         </div>
 
-        <Button 
-          onClick={handleCreateListing} 
+        <Button
+          onClick={handleCreateListing}
           disabled={loading || !formData.domainName || !formData.price}
           className="w-full"
         >
@@ -241,7 +272,9 @@ export function CreateListing() {
         </Button>
 
         <div className="text-xs text-muted-foreground">
-          <Badge variant="outline" className="mr-2">Gas Fee Required</Badge>
+          <Badge variant="outline" className="mr-2">
+            Gas Fee Required
+          </Badge>
           <Badge variant="outline">Signature Required</Badge>
         </div>
       </CardContent>

@@ -25,7 +25,7 @@ export function ConnectWallet() {
   const [symbol, setSymbol] = useState<string | null>(null);
 
   // Use wagmi's useBalance to fetch balance and symbol
-  const { data: balanceData, isLoading: balanceLoading } = useBalance({
+  const { data: balanceData } = useBalance({
     address: address || wagmiAddress,
     // 'enabled' is not a valid property for useBalance options, so we remove it.
     // useBalance will not fetch if address is undefined/null.

@@ -10,7 +10,7 @@ import { Switch } from '@/components/ui/switch';
 import { Plus, Search, Filter } from 'lucide-react';
 
 export function AlertManager() {
-  const [alerts, setAlerts] = useState([
+  const [alerts] = useState([
     { id: 1, domain: 'vitalik.doma', type: 'expiration', active: true, priority: 'high' },
     { id: 2, domain: 'defi.doma', type: 'sale', active: true, priority: 'medium' },
     { id: 3, domain: 'nft.doma', type: 'bid', active: false, priority: 'low' },
